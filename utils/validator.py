@@ -1,15 +1,17 @@
+from datetime import datetime
+
+
 class Validator:
+    """
+    Validation helper class.
+    """
 
     @staticmethod
     def validate_title(title):
-        """
-        Validate task title.
-        """
+        if not isinstance(title, str):
+            raise ValueError("Title must be a string.")
 
         title = title.strip()
-
-        if not title:
-            raise ValueError("Title cannot be empty.")
 
         if len(title) < 3:
             raise ValueError("Title must contain at least 3 characters.")
@@ -21,9 +23,11 @@ class Validator:
 
     @staticmethod
     def validate_description(description):
-        """
-        Validate task description.
-        """
+        if description is None:
+            return ""
+
+        if not isinstance(description, str):
+            raise ValueError("Description must be a string.")
 
         description = description.strip()
 
@@ -33,31 +37,45 @@ class Validator:
         return description
 
     @staticmethod
-    def validate_task_id(task_id):
-        """
-        Validate task id.
-        """
+    def validate_priority(priority):
+        allowed = ["Low", "Medium", "High"]
 
-        try:
-            task_id = int(task_id)
+        if priority not in allowed:
+            raise ValueError(
+                "Priority must be one of: Low, Medium, High."
+            )
 
-            if task_id <= 0:
-                raise ValueError
-
-            return task_id
-
-        except ValueError:
-            raise ValueError("Invalid task ID.")
+        return priority
 
     @staticmethod
-    def validate_status(status):
+    def validate_due_date(due_date):
         """
-        Validate task status.
+        Accepts:
+            None
+            ""
+            YYYY-MM-DD
         """
 
-        allowed = ["Pending", "Completed"]
+        if due_date is None or due_date == "":
+            return None
 
-        if status not in allowed:
-            raise ValueError("Invalid task status.")
+        try:
+            datetime.strptime(due_date, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError(
+                "Due date format must be YYYY-MM-DD."
+            )
 
-        return status
+        return due_date
+
+    @staticmethod
+    def validate_task_id(task_id):
+        try:
+            task_id = int(task_id)
+        except (TypeError, ValueError):
+            raise ValueError("Task ID must be an integer.")
+
+        if task_id <= 0:
+            raise ValueError("Task ID must be greater than zero.")
+
+        return task_id
