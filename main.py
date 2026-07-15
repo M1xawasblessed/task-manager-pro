@@ -1,4 +1,4 @@
-from database.db import create_tables
+from database.db import initialize_database
 from services.task_service import TaskService
 
 
@@ -123,7 +123,7 @@ def delete_task():
 
 
 def main():
-    create_tables()
+    initialize_database()
 
     while True:
         show_menu()
